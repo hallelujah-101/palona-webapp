@@ -36,5 +36,5 @@ def search_db(query):
     result = [str(response.document.content) for response in responses]
     return result
 
-if __name__=="__main__":
+if __name__== '__main__':
     app.run(port=8080)
