@@ -3,6 +3,7 @@ from google.cloud import discoveryengine
      
 app = Flask(__name__)
 
+# TODO : .env and loadenv 
 PROJECT_ID = "mindful-phalanx-473719-j7"
 DATA_STORE_ID = "palona-fasion-data_1759263624316"
 LOCATION_ID = "global"
@@ -11,7 +12,7 @@ APP_ID = "letshop_1759263815422"
 
 @app.route("/")
 def start():
-    return "Listening on port 8000"
+    return "Listening on port 8080"
 
 @app.route("/searchdb/<query>")
 def search_db(query):
@@ -35,5 +36,5 @@ def search_db(query):
     result = [str(response.document.content) for response in responses]
     return result
 
-if __name__ == '__main__':
-    app.run(port=8000)
+if __name__=="__main__":
+    app.run(port=8080)
