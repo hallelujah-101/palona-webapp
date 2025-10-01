@@ -1,14 +1,12 @@
+import os
+from dotenv import load_dotenv
+
 from flask import Flask , render_template
 from google.cloud import discoveryengine
      
 app = Flask(__name__)
 
-# TODO : .env and loadenv 
-PROJECT_ID = "mindful-phalanx-473719-j7"
-DATA_STORE_ID = "palona-fasion-data_1759263624316"
-LOCATION_ID = "global"
-APP_ID = "letshop_1759263815422"
-
+load_dotenv()
 
 @app.route("/")
 def start():
@@ -20,10 +18,10 @@ def search_db(query):
     client = discoveryengine.SearchServiceClient()
     
     service_config = client.serving_config_path(
-        project=PROJECT_ID,
-        location=LOCATION_ID,
-        data_store=DATA_STORE_ID,
-        serving_config=APP_ID
+        project=os.getenv('PROJECT_ID'),
+        location=os.getenv('LOCATION_ID'),
+        data_store=os.getenv('LOCATION_ID'),
+        serving_config=os.getenv('APP_ID')
     )
 
     request = discoveryengine.SearchRequest(
@@ -36,5 +34,3 @@ def search_db(query):
     result = [str(response.document.content) for response in responses]
     return result
 
-if __name__== '__main__':
-    app.run(port=8080)
