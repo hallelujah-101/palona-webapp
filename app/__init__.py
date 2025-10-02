@@ -1,11 +1,10 @@
 import os
 import requests
-from dotenv import load_dotenv
+import vertexai
 
 from flask import Flask
 from google.cloud import discoveryengine
-from vertexai.preview import reasoning_engines
-
+from dotenv import load_dotenv
      
 app = Flask(__name__)
 
@@ -14,13 +13,16 @@ load_dotenv()
 PROJECT_ID = os.getenv('PROJECT_ID')
 LOCATION = os.getenv('LOCATION_ID')
 NB_R_ENGINE_ID = os.getenv('NB_R_ENGINE_ID')
+NB_R_ENGINE_LOCATION = os.getenv('NB_R_ENGINE_LOCATION')
+STAGING_BUCKET = os.getenv('STAGING_BUCKET')
+
 MAX_RETRIES = 10
 
 @app.route("/")
 def start():
     return "Listening on port 8080"
 
-@app.route("/searchdb/<query>")
+@app.route("/search_db/<query>")
 def search_db(query):
     
     client = discoveryengine.SearchServiceClient()
@@ -41,24 +43,17 @@ def search_db(query):
     responses = client.search(request)
     result = [str(response.document) for response in responses]
     return result
+    
 
-remote_agent = reasoning_engines.ReasoningEngine(
-    f"projects/{PROJECT_ID}/locations/{LOCATION}/reasoningEngines/{NB_R_ENGINE_ID}"
+vertexai.init(project=PROJECT_ID, location=LOCATION, staging_bucket=STAGING_BUCKET)
+client = vertexai.Client(
+    project=PROJECT_ID,
+    location=LOCATION
 )
+
+remote_agent = client.agent_engines.get(name="projects/{PROJECT_ID}/locations/{NB_R_ENGINE_LOCATION}/reasoningEngines/{NB_R_ENGINE_ID}")
+
 @app.route("/ask_gemini/<query>")
 def ask_gemini(query):
-    retries = 0
-    resp = None
-    while retries < MAX_RETRIES:
-        try:
-            retries += 1
-            resp = remote_agent.query(input=query)
-            if (resp == None) or (len(resp["output"].strip()) == 0):
-                raise ValueError("Empty response.")
-            break
-        except Exception:
-            if (resp == None) or (len(resp["output"].strip()) == 0):
-                raise ValueError("Too many retries.")
-                return "No response received from Reasoning Engine."
-            else:
-                return resp["output"]
+    response = remote_agent.query(input=query)
+    return response['output']
