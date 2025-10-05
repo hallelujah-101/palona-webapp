@@ -54,7 +54,6 @@ def start():
 def search_database():
     data = request.json
     query = data.get('query')
-    print(query)
     
     responses = vertex_search(query)
     result = [str(response.document) for response in responses]
@@ -66,7 +65,6 @@ remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGI
 def ask_gemini():
     prompt_data = request.json
     query = prompt_data.get('query')
-    print(query)
     
     response = remote_agent.query(input=query)
     return response['output']
