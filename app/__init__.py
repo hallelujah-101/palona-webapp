@@ -1,6 +1,7 @@
 import os
 import vertexai
 from vertexai.preview import reasoning_engines
+import json
 
 from flask import Flask, request
 from google.cloud import discoveryengine
@@ -44,11 +45,12 @@ def vertex_search(search_query: str):
 
     return response
 
-def get_query(request):
-    response = request.json
-    prompt = response.get('query')
-    query = prompt.get('text') + " ".join(prompt.get('attachments'))
+def get_query(request_object):
+    text = request_object.get('text', type=str)
+    attachments = request_object.get('attachments')
 
+    query = text + " " + "".join(attachments)
+    
     return query
 
 @app.route("/")
@@ -66,7 +68,7 @@ remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGI
 
 @app.route("/ask_gemini", methods=['GET'])
 def ask_gemini():
-    query = get_query(request)
+    query = get_query(request.args)
     
     response = remote_agent.query(input=query)
     return response['output']
