@@ -1,6 +1,4 @@
 import os
-import logging
-import requests
 import vertexai
 from vertexai.preview import reasoning_engines
 
@@ -46,14 +44,20 @@ def vertex_search(search_query: str):
 
     return response
 
+def get_query(request):
+    response = request.json
+    prompt = response.get('query')
+    query = prompt.get('text') + prompt.get('attachments').join(' ')
+
+    return query
+
 @app.route("/")
 def start():
     return "Listening on port 8080"
 
-@app.route("/search_db", methods=['POST'])
+@app.route("/search_database", methods=['POST'])
 def search_database():
-    data = request.json
-    query = data.get('query')
+    query = get_query(request)
     
     responses = vertex_search(query)
     result = [str(response.document) for response in responses]
@@ -63,8 +67,7 @@ remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGI
 
 @app.route("/ask_gemini", methods=['POST'])
 def ask_gemini():
-    prompt_data = request.json
-    query = prompt_data.get('query')
-    
+    query = get_query(request)
+
     response = remote_agent.query(input=query)
     return response['output']
