@@ -55,19 +55,18 @@ def get_query(request):
 def start():
     return "Listening on port 8080"
 
-@app.route("/search_database", methods=['POST'])
+@app.route("/search_database", methods=['GET'])
 def search_database():
-    query = get_query(request)
-    
-    responses = vertex_search(query)
+
+    responses = vertex_search(str(request))
     result = [str(response.document) for response in responses]
     return result
     
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
-@app.route("/ask_gemini", methods=['POST'])
+@app.route("/ask_gemini", methods=['GET'])
 def ask_gemini():
     query = get_query(request)
-
+    
     response = remote_agent.query(input=query)
     return response['output']
