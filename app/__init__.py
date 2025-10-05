@@ -17,6 +17,7 @@ load_dotenv()
 
 PROJECT_ID = os.getenv('PROJECT_ID')
 LOCATION = os.getenv('LOCATION_ID')
+DATA_STORE_ID = os.getenv('DATA_STORE_ID')
 NB_R_ENGINE_ID = os.getenv('NB_R_ENGINE_ID')
 NB_R_ENGINE_LOCATION = os.getenv('NB_R_ENGINE_LOCATION')
 STAGING_BUCKET = os.getenv('STAGING_BUCKET')
@@ -25,16 +26,15 @@ APP_ID = os.getenv('APP_ID')
 
 vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
 
-def search_sample(project_id: str, location: str, engine_id: str, search_query: str):
-    client_options = (
-        ClientOptions(api_endpoint=f"{location}-discoveryengine.googleapis.com")
-        if location != "global"
-        else None
+def vertex_search(search_query: str):
+    client = discoveryengine.SearchServiceClient()
+    
+    serving_config = client.serving_config_path(
+        project=PROJECT_ID,
+        location=LOCATION,
+        data_store=DATA_STORE_ID,
+        serving_config=APP_ID
     )
-
-    client = discoveryengine.SearchServiceClient(client_options=client_options)
-
-    serving_config = f"projects/{project_id}/locations/{location}/collections/default_collection/engines/{engine_id}/servingConfigs/default_config"
 
     request = discoveryengine.SearchRequest(
         serving_config=serving_config,
@@ -51,12 +51,12 @@ def start():
     return "Listening on port 8080"
 
 @app.route("/search_db", methods=['POST'])
-def search_db():
+def search_database():
     data = request.json
     query = data.get('query')
     print(query)
     
-    responses = search_sample(PROJECT_ID, LOCATION, APP_ID, query)
+    responses = vertex_search(query)
     result = [str(response.document) for response in responses]
     return result
     
