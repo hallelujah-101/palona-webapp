@@ -47,7 +47,7 @@ def vertex_search(search_query: str):
 def get_query(request):
     response = request.json
     prompt = response.get('query')
-    query = prompt.get('text') + prompt.get('attachments').join(' ')
+    query = prompt.get('text') + " ".join(prompt.get('attachments'))
 
     return query
 
