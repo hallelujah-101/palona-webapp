@@ -61,14 +61,15 @@ def start():
 def search_database():
 
     responses = vertex_search(str(request))
-    result = [str(response.document) for response in responses]
+    result = json.dumps([json.dumps(response.document) for response in responses])
     return result
     
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
 @app.route("/ask_gemini", methods=['GET'])
 def ask_gemini():
-    query = get_query(request.args)
+    query = request.args.get('query')
     
     response = remote_agent.query(input=query)
+    print(response)
     return response['output']
