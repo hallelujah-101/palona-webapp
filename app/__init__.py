@@ -66,9 +66,10 @@ def search_database():
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
 @app.route("/ask_gemini", methods=['GET'])
+
 def ask_gemini() -> str:
     query = request.args.get('query')
     
     response = remote_agent.query(input=query)
     print(response)
-    return response['output']
+    return json.dumps(response)
