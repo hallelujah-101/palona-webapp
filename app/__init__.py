@@ -4,6 +4,7 @@ from vertexai.preview import reasoning_engines
 import json
 
 from flask import Flask, request
+from flask_cors import CORS
 from google.cloud import discoveryengine
 from dotenv import load_dotenv
 from google.cloud import discoveryengine_v1 as discoveryengine
@@ -11,6 +12,7 @@ from google.api_core.client_options import ClientOptions
 
      
 app = Flask(__name__)
+CORS(app)
 
 load_dotenv()
 
@@ -21,7 +23,6 @@ NB_R_ENGINE_ID = os.getenv('NB_R_ENGINE_ID')
 NB_R_ENGINE_LOCATION = os.getenv('NB_R_ENGINE_LOCATION')
 STAGING_BUCKET = os.getenv('STAGING_BUCKET')
 APP_ID = os.getenv('APP_ID')
-
 
 vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
 
@@ -66,10 +67,8 @@ def search_database():
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
 @app.route("/ask_gemini", methods=['GET'])
-
-def ask_gemini() -> str:
+def ask_gemini():
     query = request.args.get('query')
     
     response = remote_agent.query(input=query)
-    print(response)
     return json.dumps(response)
