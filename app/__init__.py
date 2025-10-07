@@ -77,4 +77,4 @@ def ask_gemini():
 
         response = make_response(model_output)
         response.headers.add("Access-Control-Allow-Origin",'*')
-        return json.dumps(response)
+        return response
