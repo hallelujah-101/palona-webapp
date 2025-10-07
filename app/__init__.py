@@ -12,7 +12,6 @@ from google.api_core.client_options import ClientOptions
 
      
 app = Flask(__name__)
-cors = CORS(app, resources={"/api/ask_gemini": {"origins": "https://mindful-phalanx-473719-j7.web.app/"}})
 
 load_dotenv()
 
@@ -23,6 +22,7 @@ NB_R_ENGINE_ID = os.getenv('NB_R_ENGINE_ID')
 NB_R_ENGINE_LOCATION = os.getenv('NB_R_ENGINE_LOCATION')
 STAGING_BUCKET = os.getenv('STAGING_BUCKET')
 APP_ID = os.getenv('APP_ID')
+CLIENT = os.getenv('CLIENT')
 
 vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
 
@@ -68,9 +68,13 @@ remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGI
 
 
 @app.route("/ask_gemini", methods=['GET'])
-@cross_origin
 def ask_gemini():
     query = request.args.get('query')
     
+
     response = remote_agent.query(input=query)
+
+    response.update({"Access-Control-Allow-Origin":CLIENT})
+    response.update({"Access-Control-Allow-Headers":CLIENT})
+    response.update({"Access-Control-Allow-Methods":CLIENT})
     return json.dumps(response)
