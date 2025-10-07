@@ -71,7 +71,10 @@ def ask_gemini():
         response = make_response()
         response.headers.add("Access-Control-Allow-Origin",'*')
         return response
+    else:
+        query = request.args.get('query')
+        model_output = remote_agent.query(input=query)
 
-    query = request.args.get('query')
-    response = remote_agent.query(input=query)
-    return json.dumps(response)
+        response = make_response(model_output)
+        response.headers.add("Access-Control-Allow-Origin",'*')
+        return json.dumps(response)
