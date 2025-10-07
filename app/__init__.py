@@ -4,6 +4,7 @@ from vertexai.preview import reasoning_engines
 import json
 
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 from google.cloud import discoveryengine
 from dotenv import load_dotenv
 from google.cloud import discoveryengine_v1 as discoveryengine
@@ -11,6 +12,7 @@ from google.api_core.client_options import ClientOptions
 
      
 app = Flask(__name__)
+cors = CORS(app, resources={"/api/ask_gemini": {"origins": "https://mindful-phalanx-473719-j7.web.app/"}})
 
 load_dotenv()
 
@@ -64,7 +66,9 @@ def search_database():
     
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
+
 @app.route("/ask_gemini", methods=['GET'])
+@cross_origin
 def ask_gemini():
     query = request.args.get('query')
     
