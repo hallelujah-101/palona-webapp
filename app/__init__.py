@@ -71,10 +71,5 @@ remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGI
 def ask_gemini():
     query = request.args.get('query')
     
-
     response = remote_agent.query(input=query)
-
-    response.update({"Access-Control-Allow-Origin":CLIENT})
-    response.update({"Access-Control-Allow-Headers":CLIENT})
-    response.update({"Access-Control-Allow-Methods":CLIENT})
     return json.dumps(response)
