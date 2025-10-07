@@ -70,6 +70,8 @@ def ask_gemini():
     if request.method == 'OPTIONS':
         response = make_response()
         response.headers.add("Access-Control-Allow-Origin",'*')
+        response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
+        response.headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
         return response
     else:
         query = request.args.get('query')
@@ -77,4 +79,6 @@ def ask_gemini():
 
         response = make_response(model_output)
         response.headers.add("Access-Control-Allow-Origin",'*')
+        response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
+        response.headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
         return response
