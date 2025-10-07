@@ -3,7 +3,7 @@ import vertexai
 from vertexai.preview import reasoning_engines
 import json
 
-from flask import Flask, request
+from flask import Flask, request, make_response
 from google.cloud import discoveryengine
 from dotenv import load_dotenv
 from google.cloud import discoveryengine_v1 as discoveryengine
@@ -64,10 +64,14 @@ def search_database():
     
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
-
 @app.route("/ask_gemini", methods=['GET'])
 def ask_gemini():
-    query = request.args.get('query')
+    
+    if request.method == 'OPTIONS':
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin",'*')
+        return response
 
+    query = request.args.get('query')
     response = remote_agent.query(input=query)
     return json.dumps(response)
