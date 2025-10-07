@@ -4,7 +4,6 @@ from vertexai.preview import reasoning_engines
 import json
 
 from flask import Flask, request
-from flask_cors import CORS
 from google.cloud import discoveryengine
 from dotenv import load_dotenv
 from google.cloud import discoveryengine_v1 as discoveryengine
@@ -12,7 +11,6 @@ from google.api_core.client_options import ClientOptions
 
      
 app = Flask(__name__)
-CORS(app)
 
 load_dotenv()
 
