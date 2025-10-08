@@ -64,21 +64,14 @@ def search_database():
     
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
-@app.route("/ask_gemini", methods=['GET'])
+@app.route("/ask_gemini", methods=['GET', 'OPTIONS'])
 def ask_gemini():
-    
-    if request.method == 'OPTIONS':
-        response = make_response()
-        response.headers.add("Access-Control-Allow-Origin",'*')
-        response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
-        response.headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-        return response
-    else:
-        query = request.args.get('query')
-        model_output = remote_agent.query(input=query)
+        
+    query = request.args.get('query')
+    model_output = remote_agent.query(input=query)
 
-        response = make_response(model_output)
-        response.headers.add("Access-Control-Allow-Origin",'*')
-        response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
-        response.headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-        return response
+    response = make_response(model_output)
+    response.headers.add("Access-Control-Allow-Origin",'*')
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
+    response.headers.add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept")
+    return response
