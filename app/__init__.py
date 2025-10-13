@@ -2,6 +2,8 @@ import os
 import vertexai
 from vertexai.preview import reasoning_engines
 import json
+from flask_cors import CORS
+from types import List
 
 from flask import Flask, request, make_response
 from google.cloud import discoveryengine
@@ -11,6 +13,7 @@ from google.api_core.client_options import ClientOptions
 
      
 app = Flask(__name__)
+CORS(app)
 
 load_dotenv()
 
@@ -24,7 +27,7 @@ APP_ID = os.getenv('APP_ID')
 
 vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
 
-def vertex_search(search_query: str):
+def vertex_search(search_query: str, images: List[str]):
     client = discoveryengine.SearchServiceClient()
     
     serving_config = client.serving_config_path(
@@ -34,15 +37,21 @@ def vertex_search(search_query: str):
         serving_config=APP_ID
     )
 
-    request = discoveryengine.SearchRequest(
-        serving_config=serving_config,
-        query=search_query,
-        page_size=10,
-        )
-    
-    response = client.search(request)
+    responses = []
+    for image in images:
 
-    return response
+        image_query = discoveryengine.SearchRequest.ImageQuery(image)
+        request = discoveryengine.SearchRequest(
+            serving_config=serving_config,
+            query=search_query,
+            image_query=image_query,
+            page_size=10,
+            )
+        
+        response = client.search(request)
+        responses.append(response)
+
+    return responses
 
 def get_query(request_object):
     text = request_object.get('text', type=str)
@@ -55,21 +64,26 @@ def get_query(request_object):
 def start():
     return "Listening on port 8080"
 
-@app.route("/search_database", methods=['GET'])
+@app.route("/search_database", methods=['POST'])
 def search_database():
+    text = request.form.get('text')
+    attachments = request.files.getlist()
 
-    responses = vertex_search(str(request))
-    result = [str(response.document) for response in responses]
+    response_list = vertex_search(text, attachments)
+    result = [[str(single_response.document) for single_response in response] for response in response_list]
     return result
     
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
-@app.route("/ask_gemini", methods=['GET', 'OPTIONS'])
+@app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
 def ask_gemini():
         
-    query = request.args.get('query')
-    model_output = remote_agent.query(input=query)
+    text = request.form.get('text')
+    attachments = request.files.getlist()
 
+    query = {'text': text, 'attachments': attachments}
+    model_output = remote_agent.query(input=query)
+    
     response = make_response(model_output)
     response.headers.add("Access-Control-Allow-Origin",'*')
     response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
