@@ -2,7 +2,6 @@ import os
 import vertexai
 from vertexai.preview import reasoning_engines
 import json
-from flask_cors import CORS
 from typing import List
 import base64
 
@@ -14,7 +13,6 @@ from google.api_core.client_options import ClientOptions
 
      
 app = Flask(__name__)
-CORS(app)
 
 load_dotenv()
 
@@ -67,7 +65,7 @@ def start():
 
 @app.route("/search_database", methods=['POST'])
 def search_database():
-    
+
     text = request.form.get('text')
     attachments = request.form.get('attachments')
     
