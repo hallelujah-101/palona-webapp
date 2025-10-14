@@ -3,7 +3,8 @@ import vertexai
 from vertexai.preview import reasoning_engines
 import json
 from flask_cors import CORS
-from types import List
+from typing import List
+import base64
 
 from flask import Flask, request, make_response
 from google.cloud import discoveryengine
@@ -28,6 +29,7 @@ APP_ID = os.getenv('APP_ID')
 vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
 
 def vertex_search(search_query: str, images: List[str]):
+    
     client = discoveryengine.SearchServiceClient()
     
     serving_config = client.serving_config_path(
@@ -39,15 +41,14 @@ def vertex_search(search_query: str, images: List[str]):
 
     responses = []
     for image in images:
-
-        image_query = discoveryengine.SearchRequest.ImageQuery(image)
+        image_query = discoveryengine.SearchRequest.ImageQuery(image_bytes=image)
         request = discoveryengine.SearchRequest(
             serving_config=serving_config,
             query=search_query,
             image_query=image_query,
             page_size=10,
             )
-        
+            
         response = client.search(request)
         responses.append(response)
 
@@ -66,9 +67,10 @@ def start():
 
 @app.route("/search_database", methods=['POST'])
 def search_database():
+    
     text = request.form.get('text')
-    attachments = request.files.getlist()
-
+    attachments = request.form.get('attachments')
+    
     response_list = vertex_search(text, attachments)
     result = [[str(single_response.document) for single_response in response] for response in response_list]
     return result
@@ -79,13 +81,14 @@ remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGI
 def ask_gemini():
         
     text = request.form.get('text')
-    attachments = request.files.getlist()
+    attachments = request.form.get('attachments')
 
     query = {'text': text, 'attachments': attachments}
     model_output = remote_agent.query(input=query)
     
     response = make_response(model_output)
-    response.headers.add("Access-Control-Allow-Origin",'*')
+    response.headers.add("Access-Control-Allow-Origin","*")
+    response.headers.add("Accept", "*/*")
     response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
     response.headers.add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept")
     return response
