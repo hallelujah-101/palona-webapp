@@ -59,7 +59,7 @@ def vertex_search(search_query: str, images: Optional[List[str]] = []):
                 query=search_query,
                 page_size=10,
                 )
-                
+
         response = client.search(request)
         responses.append(response)
 
@@ -95,7 +95,8 @@ def ask_gemini():
     attachments = request.form.get('attachments')
     
     query = {'text': text, 'attachments': attachments}
-    model_output = remote_agent.query(input=query)
+    query_string = json.dumps(query)
+    model_output = remote_agent.query(input=query_string)
     
     response = make_response(model_output)
     response.headers.add("Access-Control-Allow-Origin","*")
