@@ -49,7 +49,7 @@ def vertex_search(search_query: str, images: List[str]):
             
         response = client.search(request)
         responses.append(response)
-
+    
     return responses
 
 def get_query(request_object):
