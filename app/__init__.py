@@ -2,7 +2,7 @@ import os
 import vertexai
 from vertexai.preview import reasoning_engines
 import json
-from typing import List
+from typing import List, Optional
 import base64
 
 from flask import Flask, request, make_response
@@ -26,7 +26,7 @@ APP_ID = os.getenv('APP_ID')
 
 vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
 
-def vertex_search(search_query: str, images: List[str]):
+def vertex_search(search_query: str, images: Optional[List[str]] = []):
     
     client = discoveryengine.SearchServiceClient()
     
@@ -38,18 +38,31 @@ def vertex_search(search_query: str, images: List[str]):
     )
 
     responses = []
-    for image in images:
-        image_query = discoveryengine.SearchRequest.ImageQuery(image_bytes=image)
+    if len(images) > 0: 
+        
+        for image in images:
+            image_query = discoveryengine.SearchRequest.ImageQuery(image_bytes=image)
+            request = discoveryengine.SearchRequest(
+                serving_config=serving_config,
+                query=search_query,
+                image_query=image_query,
+                page_size=10,
+                )
+                
+            response = client.search(request)
+            responses.append(response)
+    
+    else:
+
         request = discoveryengine.SearchRequest(
-            serving_config=serving_config,
-            query=search_query,
-            image_query=image_query,
-            page_size=10,
-            )
-            
+                serving_config=serving_config,
+                query=search_query,
+                page_size=10,
+                )
+                
         response = client.search(request)
         responses.append(response)
-    
+
     return responses
 
 def get_query(request_object):
@@ -80,7 +93,7 @@ def ask_gemini():
         
     text = request.form.get('text')
     attachments = request.form.get('attachments')
-
+    
     query = {'text': text, 'attachments': attachments}
     model_output = remote_agent.query(input=query)
     
