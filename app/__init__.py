@@ -78,7 +78,13 @@ def search_database():
     response_list = vertex_search(text, attachments)
     result = [[str(single_response.document) for single_response in response] for response in response_list]
     return result
+
+def search_database(text, attachments):
     
+    response_list = vertex_search(text, attachments)
+    result = [[str(single_response.document) for single_response in response] for response in response_list]
+    return result
+
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
 @app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
@@ -87,9 +93,13 @@ def ask_gemini():
     text = request.form.get('text')
     attachments = request.form.get('attachments')
     
-    query = {'text': text, 'attachments': attachments}
-    query_string = json.dumps(query)
-    model_output = remote_agent.query(input=query_string)
+    database_output = search_database(text,[attachments])
+    
+    # query = {'text': text, 'attachments': attachments}
+    # query_string = json.dumps(query)
+
+    query = f'input: {text} output: {database_output}'
+    model_output = remote_agent.query(input=query)
     
     response = make_response(model_output)
     response.headers.add("Access-Control-Allow-Origin","*")
