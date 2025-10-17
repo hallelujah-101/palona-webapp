@@ -89,14 +89,15 @@ remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGI
 
 @app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
 def ask_gemini():
-        
+    
+    session_id = request.form.get('session_id')
     text = request.form.get('text')
     attachments = request.form.get('attachments')
     
     database_output = search_database(text,[attachments])
     
     query = f'input: {text} output: {database_output}'
-    model_output = remote_agent.query(input=query)
+    model_output = remote_agent.query(input=query, config={"configurable": {"session_id": f"{session_id}"}})
     
     response = make_response(model_output)
     response.headers.add("Access-Control-Allow-Origin","*")
