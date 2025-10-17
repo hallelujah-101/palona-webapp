@@ -76,7 +76,7 @@ def search_database():
     attachments = request.form.get('attachments')
     
     response_list = vertex_search(text, attachments)
-    result = [[str(single_response.document) for single_response in response] for response in response_list]
+    result = [str(response.document) for response in response_list]
     return result
 
 def search_database(text, attachments):
@@ -95,9 +95,6 @@ def ask_gemini():
     
     database_output = search_database(text,[attachments])
     
-    # query = {'text': text, 'attachments': attachments}
-    # query_string = json.dumps(query)
-
     query = f'input: {text} output: {database_output}'
     model_output = remote_agent.query(input=query)
     
