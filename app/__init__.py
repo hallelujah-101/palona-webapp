@@ -26,7 +26,7 @@ APP_ID = os.getenv('APP_ID')
 
 vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
 
-def vertex_search(search_query: str, images: Optional[List[str]] = []):
+def vertex_search(search_query: str, images: Optional[List[str]]):
     
     client = discoveryengine.SearchServiceClient()
     
@@ -36,9 +36,9 @@ def vertex_search(search_query: str, images: Optional[List[str]] = []):
         data_store=DATA_STORE_ID,
         serving_config=APP_ID
     )
-
+    
     responses = []
-    if len(images) > 0: 
+    if images[0] != None: 
         
         for image in images:
             image_query = discoveryengine.SearchRequest.ImageQuery(image_bytes=image)
@@ -64,13 +64,6 @@ def vertex_search(search_query: str, images: Optional[List[str]] = []):
         responses.append(response)
 
     return responses
-
-def get_query(request_object):
-    text = request_object.get('text', type=str)
-    attachments = request_object.get('attachments')
-
-    query = text + " " + "".join(attachments)
-    return query
 
 @app.route("/")
 def start():
