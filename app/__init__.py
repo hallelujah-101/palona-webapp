@@ -46,7 +46,7 @@ def vertex_search(search_query: str, images: Optional[List[str]] = []):
                 serving_config=serving_config,
                 query=search_query,
                 image_query=image_query,
-                page_size=10,
+                page_size=1,
                 )
                 
             response = client.search(request)
@@ -57,7 +57,7 @@ def vertex_search(search_query: str, images: Optional[List[str]] = []):
         request = discoveryengine.SearchRequest(
                 serving_config=serving_config,
                 query=search_query,
-                page_size=10,
+                page_size=1,
                 )
 
         response = client.search(request)
