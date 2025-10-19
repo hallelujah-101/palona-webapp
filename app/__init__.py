@@ -62,7 +62,7 @@ def vertex_search(search_query: str, images: Optional[List[str]]):
 
         response = client.search(request)
         responses.append(response)
-
+        
     return responses
 
 @app.route("/")
@@ -82,8 +82,7 @@ def search_database():
 def search_database(text, attachments):
     
     response_list = vertex_search(text, attachments)
-    result = [[str(single_response.document) for single_response in response] for response in response_list]
-    return result
+    result = [[str(single_response.document) for single_response in response] for response in response_list]    return result
 
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
