@@ -23,13 +23,13 @@ fastapi==0.118.2
 Flask==3.1.2
 flask-cors==6.0.1
 frozenlist==1.8.0
-google-adk==1.15.1
+google-adk
 google-api-core==2.25.2
 google-api-python-client==2.184.0
 google-auth==2.41.1
 google-auth-httplib2==0.2.0
 google-cloud==0.34.0
-google-cloud-aiplatform==1.119.0
+google-cloud-aiplatform
 google-cloud-appengine-logging==1.6.2
 google-cloud-audit-log==0.3.3
 google-cloud-bigquery==3.38.0
@@ -129,7 +129,7 @@ tzlocal==5.3.1
 uritemplate==4.2.0
 urllib3==2.5.0
 uvicorn==0.37.0
-vertexai==1.71.1
+vertexai
 watchdog==6.0.0
 websockets==15.0.1
 Werkzeug==3.1.3

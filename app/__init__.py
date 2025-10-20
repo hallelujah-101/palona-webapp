@@ -1,9 +1,7 @@
 import os
 import vertexai
 from vertexai.preview import reasoning_engines
-import json
 from typing import List, Optional
-import base64
 import re
 
 from flask import Flask, request, make_response
