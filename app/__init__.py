@@ -4,6 +4,7 @@ from vertexai.preview import reasoning_engines
 import json
 from typing import List, Optional
 import base64
+import re
 
 from flask import Flask, request, make_response
 from google.cloud import discoveryengine
@@ -50,10 +51,11 @@ def vertex_search(search_query: str, images: Optional[List[str]]):
                 )
                 
             response = client.search(request)
-            responses.append(response)
-    
-    else:
+            response_documents = get_top_documents(response)
+            responses.append(response_documents)
 
+    else:
+        
         request = discoveryengine.SearchRequest(
                 serving_config=serving_config,
                 query=search_query,
@@ -61,7 +63,8 @@ def vertex_search(search_query: str, images: Optional[List[str]]):
                 )
 
         response = client.search(request)
-        responses.append(response)
+        response_documents = get_top_documents(response)
+        responses.append(response_documents)
         
     return responses
 
@@ -76,29 +79,49 @@ def search_database():
     attachments = request.form.get('attachments')
     
     response_list = vertex_search(text, attachments)
-    result = [str(response.document) for response in response_list]
-    return result
+    return response_list
+
+def get_top_documents(response, count = 100):
+    """Get the top {count} documents from a search result"""
+
+    documents = []
+    for result in response:
+        if count > 0:
+            documents.append(str(result.document))
+            count -=1
+        else:
+            break
+
+    return documents
 
 def search_database(text, attachments):
     
     response_list = vertex_search(text, attachments)
-    result = [[str(single_response.document) for single_response in response] for response in response_list]    return result
+    return response_list
 
 remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
 @app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
 def ask_gemini():
-    
+
     session_id = request.form.get('session_id')
     text = request.form.get('text')
     attachments = request.form.get('attachments')
     
     database_output = search_database(text,[attachments])
     
-    query = f'input: {text} output: {database_output}'
-    model_output = remote_agent.query(input=query, config={"configurable": {"session_id": f"{session_id}"}})
+    query = f'input: {text} database_output: {database_output}'
+    model_response = remote_agent.query(input=query, config={"configurable": {"session_id": f"{session_id}"}})
+    model_output = model_response['output']
     
-    response = make_response(model_output)
+    formatted_output = ''
+    if 'json' in model_output:
+        output = model_output.split('json')[1]
+        formatted_output = re.sub(r'[\n`]', '', output)
+    else:
+        formatted_output = model_output
+    
+    response = make_response(formatted_output)
     response.headers.add("Access-Control-Allow-Origin","*")
     response.headers.add("Accept", "*/*")
     response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
