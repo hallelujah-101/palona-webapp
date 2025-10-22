@@ -3,6 +3,7 @@ import vertexai
 from vertexai.preview import reasoning_engines
 from typing import List, Optional
 import re
+import pickle
 
 from flask import Flask, request, make_response
 from google.cloud import discoveryengine
@@ -61,18 +62,19 @@ def vertex_search(search_query: str, images: Optional[List[str]]):
                 )
 
         response = client.search(request)
-        response_documents = get_top_documents(response)
-        responses.append(response_documents)
-        
+        response_documents = get_byte_form(response)
+        responses.append([response_documents])
+
     return responses
 
 @app.route("/")
 def start():
-    return "Listening on port 8080"
+    return f"Listening on port {app.config['PORT']}"
+
 
 @app.route("/search_database", methods=['POST'])
 def search_database():
-
+    
     text = request.form.get('text')
     attachments = request.form.get('attachments')
     
@@ -91,6 +93,14 @@ def get_top_documents(response, count = 100):
             break
 
     return documents
+
+def get_byte_form(response):
+
+    results = []
+    for result in response:
+        results.append(pickle.dumps(result.document))
+
+    return results
 
 def search_database(text, attachments):
     
@@ -112,14 +122,17 @@ def ask_gemini():
     model_response = remote_agent.query(input=query, config={"configurable": {"session_id": f"{session_id}"}})
     model_output = model_response['output']
     
+    response_type = 0
     formatted_output = ''
     if 'json' in model_output:
         output = model_output.split('json')[1]
         formatted_output = re.sub(r'[\n`]', '', output)
+        response_type = 1
     else:
         formatted_output = model_output
     
     response = make_response(formatted_output)
+    response.headers.add("Agent-Response",f"{response_type}")
     response.headers.add("Access-Control-Allow-Origin","*")
     response.headers.add("Accept", "*/*")
     response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
