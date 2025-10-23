@@ -19,13 +19,13 @@ This project uses Google cloud resources in the backend for searching through ap
 
 Fill in all the environment variables with the corresponding values from the resources created in the ReadMe frontend and the steps above.
 
-        * PROJECT_ID	
-        * DATA_STORE_ID	
-        * LOCATION_ID	
-        * APP_ID	
-        * NB_R_ENGINE_ID	
-        * NB_R_ENGINE_LOCATION	
-        * STAGING_BUCKET	
+         PROJECT_ID	:
+         DATA_STORE_ID :
+         LOCATION_ID :
+         APP_ID	:
+         NB_R_ENGINE_ID :	
+         NB_R_ENGINE_LOCATION	:
+         STAGING_BUCKET	:
 
 # Running the app 
 
