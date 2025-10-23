@@ -69,7 +69,7 @@ def vertex_search(search_query: str, images: Optional[List[str]]):
 
 @app.route("/")
 def start():
-    return f"Listening on port {app.config['PORT']}"
+    return f"Listening on port 8080"
 
 
 @app.route("/search_database", methods=['POST'])
