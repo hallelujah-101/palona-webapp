@@ -1,4 +1,4 @@
-# Palona backend 
+# Gemi backend 
 
 Python backend utilising Vertex Search AI and Reasoning Engine
 
