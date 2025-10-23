@@ -12,8 +12,8 @@ This project uses Google cloud resources in the backend for searching through ap
   - [Creating a Vertex AI resource and uploading data](https://cloud.google.com/generative-ai-app-builder/docs/create-engine-es)
 
 - Creating and Deploying a Langchain agent
-  - [Creating an agent and deploying it]
-  - Place the ID of the Reasoning Engine in the 'NB_R_ENGINE_ID' variable 
+  - [Creating an agent and deploying it](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/quickstart)
+  - Place the ID of the Reasoning Engine in the 'NB_R_ENGINE_ID' variable
 
 Fill in all the variables with the corresponding values from the resources created in the ReadMe frontend.
 
@@ -22,11 +22,11 @@ Fill in all the variables with the corresponding values from the resources creat
 Create a virtual environment
 
 ```Bash
-    pip install --requirements.txt
+    pip install -r requirements.txt
 ```
 
 ```Bash
-    Flask run
+    flask run
 ```
 
 
