@@ -60,7 +60,7 @@ def vertex_search(search_query: str, images: Optional[List[str]]):
                 query=search_query,
                 page_size=1,
                 )
-
+        
         response = client.search(request)
         response_documents = get_byte_form(response)
         responses.append([response_documents])
@@ -111,7 +111,7 @@ remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGI
 
 @app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
 def ask_gemini():
-
+    
     session_id = request.form.get('session_id')
     text = request.form.get('text')
     attachments = request.form.get('attachments')
