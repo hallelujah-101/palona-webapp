@@ -3,7 +3,7 @@
 Python backend utilising Vertex Search AI and Reasoning Engine
 
 # Getting started
-## Setting up Vertex AI Search and 
+## Setting up Vertex AI Search and Reasoning Engine
 
 This project uses Google cloud resources in the backend for searching through app data and reasoning about it. Follow the steps below to setup these resources
 
