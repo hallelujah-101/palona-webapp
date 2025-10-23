@@ -13,13 +13,16 @@ This project uses Google cloud resources in the backend for searching through ap
 
 - Creating and Deploying a Langchain agent
   - [Creating an agent and deploying it](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/quickstart)
-  - Place the ID of the Reasoning Engine in the 'NB_R_ENGINE_ID' variable
 
-Fill in all the variables with the corresponding values from the resources created in the ReadMe frontend.
+
+Then deploy this application to Cloud Run App. Fill in all the environment variables with the corresponding values from the resources created in the ReadMe frontend and the steps above.
+
 
 # Running the app 
 
-Create a virtual environment
+```Bash
+    python3 -m venv <name>
+```
 
 ```Bash
     pip install -r requirements.txt
