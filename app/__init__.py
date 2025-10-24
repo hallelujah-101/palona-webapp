@@ -97,6 +97,7 @@ def get_top_documents(response, count = 100):
     return documents
 
 def get_byte_form(response):
+    """Gets the byte form of the documents from a search result"""
 
     results = []
     for result in response:

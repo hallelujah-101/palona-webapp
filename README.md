@@ -2,7 +2,7 @@
 
 Python backend utilising Vertex Search AI and Reasoning Engine
 
-# Getting started
+# Getting started 
 ## Setting up Vertex AI Search and Reasoning Engine
 
 This project uses Google cloud resources in the backend for searching through app data and reasoning about it. The Vertex Search AI resource allows for natural language to optimised query conversions for structured data which is ideal for the catalogue dataset used in the project and allows for image based queries. The reasoning engine processes this data and organises it for the user. Follow the steps below to setup these resources
@@ -27,7 +27,9 @@ Fill in all the environment variables with the corresponding values from the res
          NB_R_ENGINE_LOCATION	:
          STAGING_BUCKET	:
 
-# Running the app 
+# Running locally 
+
+Add a .env file with values for the variables in the previous section. Then run the following commands in the terminal.
 
 ```Bash
     python3 -m venv <name>
