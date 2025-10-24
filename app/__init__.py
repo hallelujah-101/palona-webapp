@@ -27,6 +27,7 @@ APP_ID = os.getenv('APP_ID')
 vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
 
 def vertex_search(search_query: str, images: Optional[List[str]]):
+    """Connect to the Vertex Search resource and fetches search results based on the query."""
     
     client = discoveryengine.SearchServiceClient()
     
@@ -64,7 +65,7 @@ def vertex_search(search_query: str, images: Optional[List[str]]):
         response = client.search(request)
         response_documents = get_byte_form(response)
         responses.append([response_documents])
-
+    
     return responses
 
 @app.route("/")
@@ -74,6 +75,7 @@ def start():
 
 @app.route("/search_database", methods=['POST'])
 def search_database():
+    """Calls the function that initiates the search"""
     
     text = request.form.get('text')
     attachments = request.form.get('attachments')
@@ -82,7 +84,7 @@ def search_database():
     return response_list
 
 def get_top_documents(response, count = 100):
-    """Get the top {count} documents from a search result"""
+    """Get the top 'count' documents from a search result"""
 
     documents = []
     for result in response:
@@ -111,6 +113,7 @@ remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGI
 
 @app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
 def ask_gemini():
+    """Calls a Vertex AI Search resource and passes the data to a Reasoning Agent to generate a response"""
     
     session_id = request.form.get('session_id')
     text = request.form.get('text')
