@@ -24,7 +24,6 @@ NB_R_ENGINE_LOCATION = os.getenv('NB_R_ENGINE_LOCATION')
 STAGING_BUCKET = os.getenv('STAGING_BUCKET')
 APP_ID = os.getenv('APP_ID')
 
-vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
 
 def vertex_search(search_query: str, images: Optional[List[str]]):
     """Connect to the Vertex Search resource and fetches search results based on the query."""
@@ -110,11 +109,14 @@ def search_database(text, attachments):
     response_list = vertex_search(text, attachments)
     return response_list
 
-remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
 
 @app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
 def ask_gemini():
     """Calls a Vertex AI Search resource and passes the data to a Reasoning Agent to generate a response"""
+    
+    vertexai.init(project=PROJECT_ID, location=NB_R_ENGINE_LOCATION, staging_bucket=STAGING_BUCKET)
+
+    remote_agent = reasoning_engines.ReasoningEngine(reasoning_engine_name=NB_R_ENGINE_ID)
     
     session_id = request.form.get('session_id')
     text = request.form.get('text')
