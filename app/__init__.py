@@ -34,12 +34,8 @@ def ask_gemini():
     model_response = remote_agent.query(input=query, config={"configurable": {"session_id": f"{session_id}"}})
     model_output = model_response['output']
     
-    formatted_output = ''
-    if 'json' in model_output:
-        output = model_output.split('json')[1]
-        formatted_output = re.sub(r'[\n`]', '', output)
-    else:
-        formatted_output = model_output
+    output = model_output.split('json')[1]
+    formatted_output = re.sub(r'[\n`]', '', output)
     
     response = make_response(formatted_output)
     response.headers.add("Access-Control-Allow-Origin","*")
