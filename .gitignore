@@ -2,11 +2,9 @@
 .env
 
 # Virtual environment
-venv
+*env*
 
 # Caches
-__pycache__
-__pycache__/*
-*/__pycache__
-*/*/__pycache__
+*pycache*
+
 

@@ -17,3 +17,6 @@ class AGENT:
         vertexai.init(project=PROJECT_ID, location=LOCATION, staging_bucket=STAGING_BUCKET)
 
         self.remote_agent = reasoning_engines.ReasoningEngine(AGENT_ENGINE_RESOURCE_NAME)
+
+    def query(self, query, configuration):
+        return self.remote_agent.query(input=query, config=configuration)

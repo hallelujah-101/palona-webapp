@@ -15,7 +15,7 @@ def ask_gemini():
 
     if request.method == 'OPTIONS':
         return response_object(" ")
-        
+    
     session_id = request.form.get('session_id')
     text = request.form.get('text')
     attachments = request.form.get('attachments')
@@ -23,8 +23,8 @@ def ask_gemini():
     query = construct_query(text, attachments)
     configuration = construct_configuration(session_id)
     agent = AGENT()
-
-    model_response = agent.remote_agent.query(input=query, config=configuration)
+    
+    model_response = agent.query(query, configuration)
     formatted_output = format_response(model_response)
     
     response = response_object(formatted_output)
