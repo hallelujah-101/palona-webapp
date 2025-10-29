@@ -12,6 +12,9 @@ def start():
 @app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
 def ask_gemini():
     """Calls a Reasoning Agent to generate a response from the query"""
+
+    if request.method == 'OPTIONS':
+        return response_object(" ")
         
     session_id = request.form.get('session_id')
     text = request.form.get('text')
