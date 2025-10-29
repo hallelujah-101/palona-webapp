@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 import vertexai
-from vertexai import agent_engines
+from vertexai.preview import reasoning_engines
 
 class AGENT:
 
@@ -16,4 +16,4 @@ class AGENT:
 
         vertexai.init(project=PROJECT_ID, location=LOCATION, staging_bucket=STAGING_BUCKET)
 
-        self.remote_agent = agent_engines.get(AGENT_ENGINE_RESOURCE_NAME)
+        self.remote_agent = reasoning_engines.ReasoningEngine(AGENT_ENGINE_RESOURCE_NAME)
