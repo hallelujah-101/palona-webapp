@@ -1,22 +1,9 @@
-import os
-import vertexai
-import re
+from app.agent.reasoning_agent import AGENT
+from app.utils.helper_functions import *
 
-from flask import Flask, request, make_response
-from dotenv import load_dotenv
-from vertexai import agent_engines
+from flask import Flask, request
 
 app = Flask(__name__)
-
-load_dotenv()
-
-PROJECT_ID = os.getenv('PROJECT_ID')
-LOCATION = os.getenv('LOCATION')
-STAGING_BUCKET = os.getenv('STAGING_BUCKET')
-AGENT_ENGINE_RESOURCE_NAME = os.getenv('AGENT_ENGINE_RESOURCE_NAME')
-
-vertexai.init(project=PROJECT_ID, location=LOCATION, staging_bucket=STAGING_BUCKET)
-remote_agent = agent_engines.get(AGENT_ENGINE_RESOURCE_NAME)
 
 @app.route("/")
 def start():
@@ -30,16 +17,12 @@ def ask_gemini():
     text = request.form.get('text')
     attachments = request.form.get('attachments')
     
-    query = f"input: {text}, images: {attachments}"
-    model_response = remote_agent.query(input=query, config={"configurable": {"session_id": f"{session_id}"}})
-    model_output = model_response['output']
+    query = construct_query(text, attachments)
+    configuration = construct_configuration(session_id)
+    agent = AGENT()
+
+    model_response = agent.remote_agent.query(input=query, config=configuration)
+    formatted_output = format_response(model_response)
     
-    output = model_output.split('json')[1]
-    formatted_output = re.sub(r'[\n`]', '', output)
-    
-    response = make_response(formatted_output)
-    response.headers.add("Access-Control-Allow-Origin","*")
-    response.headers.add("Accept", "*/*")
-    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE")
-    response.headers.add("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-Type, Accept")
+    response = response_object(formatted_output)
     return response
