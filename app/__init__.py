@@ -19,8 +19,8 @@ def ask_gemini():
     session_id = request.form.get('session_id')
     text = request.form.get('text')
     attachments = request.form.get('attachments')
-    
-    query = construct_query(text, attachments)
+
+    query = construct_query(text, [attachments])
     configuration = construct_configuration(session_id)
     agent = AGENT()
     
