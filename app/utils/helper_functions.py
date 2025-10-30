@@ -5,8 +5,8 @@ def construct_configuration(session_id):
     return {"configurable": {"session_id": f"{session_id}"}}
 
 def construct_query(text, images):
-    print("Inputs", text, images)
-    return f"input: {text}, images: {images}"
+    print("Inputs:", text, images)
+    return f"text: {text}, images: {images}"
 
 def format_response(response):
 
