@@ -10,7 +10,6 @@ def construct_query(text, images):
 def format_response(response):
 
     model_output = response['output']
-    print(model_output)
     
     if 'json' in model_output:
         output = model_output.split('json')[1]
