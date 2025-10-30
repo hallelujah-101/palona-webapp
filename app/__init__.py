@@ -27,5 +27,5 @@ def ask_gemini():
     model_response = agent.query(query, configuration)
     model_output = model_response['output']
     
-    response = response_object(model_output_output)
+    response = response_object(model_output)
     return response
