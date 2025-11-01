@@ -13,7 +13,7 @@ This project uses Google cloud resources in the backend for searching through ap
  
 - Setting up a Firestore database for chat history
   - [Setup a firestore database through the console](https://cloud.google.com/firestore/native/docs/manage-databases)
-  - Open up the database in the console and create a collection
+  - Create a collection
     
 - Creating and Deploying a Langchain agent
   - [Session management with firestore database](https://cloud.google.com/agent-builder/agent-engine/develop/langchain#chat-history)
