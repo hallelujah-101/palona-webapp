@@ -16,8 +16,8 @@ This project uses Google cloud resources in the backend for searching through ap
   - Open up the database in the console and create a collection
     
 - Creating and Deploying a Langchain agent
-  - [Setting session management method](https://cloud.google.com/agent-builder/agent-engine/develop/langchain#chat-history)
-  - [Creating an agent and deploying it](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/quickstart)
+  - [Session management with firestore database](https://cloud.google.com/agent-builder/agent-engine/develop/langchain#chat-history)
+  - [Agent creation and deployment](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/quickstart)
     
 - Deploy to Cloud Run applications
   - [Deployment steps](https://cloud.google.com/run/docs/quickstarts/deploy-container)
