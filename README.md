@@ -8,7 +8,7 @@ Python backend utilising Vertex Search AI and Reasoning Engine
 This project uses Google cloud resources in the backend for searching through app data and reasoning about it. The Vertex Search AI resource allows for natural language to optimised query conversions for structured data which is ideal for the catalogue dataset used in the project and allows for image based queries. The reasoning engine processes this data and organises it for the user. Follow the steps below to setup these resources
 
 - Create a Vertex AI Search app
-  - Once in the Google cloud account head to the console and create a Vertex Search resource 
+  - Create a Vertex Search resource in your Google cloud account
   - [Creating a Vertex AI resource and uploading data](https://cloud.google.com/generative-ai-app-builder/docs/create-engine-es)
  
 - Setting up a Firestore database for chat history
