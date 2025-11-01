@@ -27,7 +27,7 @@ Fill in all the environment variables with the corresponding values from the res
          PROJECT_ID	:
          LOCATION_ID :
          STAGING_BUCKET	:
-         REASONING_ENGINE_NAME: 
+         AGENT_ENGINE_RESOURCE_NAME: 
 
 # Running locally 
 
