@@ -11,8 +11,7 @@ def format_response(response):
 
     model_output = response['output']
     
-    output = model_output.split('json')[1]
-    special_characters_removed = re.sub(r'[\n`]', '', output)
+    special_characters_removed = re.sub(r'[\n`]', '', model_output)
     opening_brackets_inserted = special_characters_removed.replace('(', '{')
     closing_brackets_inserted = opening_brackets_inserted.replace('(', '}')
     formatted_output = closing_brackets_inserted.replace('\'', '\"')
