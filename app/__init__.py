@@ -22,8 +22,8 @@ def ask_gemini():
 
     query = construct_query(text, [attachments])
     configuration = construct_configuration(session_id)
-    agent = AGENT()
     
+    agent = AGENT()
     model_response = agent.query(query, configuration)
     formatted_output = format_response(model_response)
     

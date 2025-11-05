@@ -15,7 +15,6 @@ def format_response(response):
     opening_brackets_inserted = special_characters_removed.replace('(', '{')
     closing_brackets_inserted = opening_brackets_inserted.replace('(', '}')
     formatted_output = closing_brackets_inserted.replace('\'', '\"')
-    print(formatted_output)
 
     return formatted_output
     
