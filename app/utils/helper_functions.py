@@ -10,14 +10,16 @@ def construct_query(text, images):
 def format_response(response):
 
     model_output = response['output']
-    print(model_output)
     
-    if 'json' in model_output:
-        output = model_output.split('json')[1]
-        formatted_output = re.sub(r'[\n`]', '', output)
-        return formatted_output
-    else:
-        return model_output
+    output = model_output.split('json')[1]
+    special_characters_removed = re.sub(r'[\n`]', '', output)
+    opening_brackets_inserted = special_characters_removed.replace('(', '{')
+    closing_brackets_inserted = opening_brackets_inserted.replace('(', '}')
+    formatted_output = closing_brackets_inserted.replace('\'', '\"')
+    print(formatted_output)
+
+    return formatted_output
+    
 
 def response_object(content):
     
