@@ -13,7 +13,7 @@ def format_response(response):
     
     special_characters_removed = re.sub(r'[\n`]', '', model_output)
     opening_brackets_inserted = special_characters_removed.replace('(', '{')
-    closing_brackets_inserted = opening_brackets_inserted.replace('(', '}')
+    closing_brackets_inserted = opening_brackets_inserted.replace(')', '}')
     formatted_output = closing_brackets_inserted.replace('\'', '\"')
 
     return formatted_output
