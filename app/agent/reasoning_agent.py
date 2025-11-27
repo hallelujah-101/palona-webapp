@@ -90,8 +90,13 @@ class AGENT:
             if event.is_final_response():
                 final_response = event.content.parts[0].text
                 return f"Agent Response: {final_response}"
+            
+            if event.content:
+                if event.content.parts[0].function_response:
+                    if event.content.parts[0].function_response.name == 'output_formatter':
+                        return event.content.parts[0].function_response.response
                     
-
+    
     def output_formatter(self, text_response: str, product_list: Optional[List]):
         """Format output using the summary response text and list of products in the agent response"""
 

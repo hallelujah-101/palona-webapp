@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def start():
-    return f"Listening on port 8080"
+    return f"Listening ....."
 
 @app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
 async def ask_gemini():
