@@ -4,7 +4,6 @@ from app.utils.helper_functions import *
 
 from flask import Flask, request
 
-
 app = Flask(__name__)
 
 @app.route("/")
