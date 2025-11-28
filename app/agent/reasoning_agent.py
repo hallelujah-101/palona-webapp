@@ -75,7 +75,6 @@ class AGENT:
                     invocation_context.session
                 )
     
-    
     async def query(self, query, user_id): 
         session = await self.session_service.create_session(
             app_name=self.agent.name, 

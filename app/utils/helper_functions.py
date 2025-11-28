@@ -6,19 +6,7 @@ def construct_configuration(session_id):
 
 def construct_query(text, images):
     return f"input: {text}, images: {images}"
-
-def format_response(response):
-
-    model_output = response['output']
     
-    special_characters_removed = re.sub(r'[\n`]', '', model_output)
-    opening_brackets_inserted = special_characters_removed.replace('(', '{')
-    closing_brackets_inserted = opening_brackets_inserted.replace(')', '}')
-    formatted_output = closing_brackets_inserted.replace('\'', '\"')
-
-    return formatted_output
-    
-
 def response_object(content):
     
     response = make_response(content)
