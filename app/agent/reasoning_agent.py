@@ -30,7 +30,7 @@ class AGENT:
         self.AGENT_ENGINE_ID = os.getenv('AGENT_ENGINE_ID')
         self.AGENT_ENGINE_RESOURCE_NAME = os.getenv('AGENT_ENGINE_RESOURCE_NAME')
         self.MODEL = os.getenv('MODEL_NAME')
-        
+                
         os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "TRUE"
         os.environ["GOOGLE_CLOUD_PROJECT"] = self.PROJECT_ID
         os.environ["GOOGLE_CLOUD_LOCATION"] = self.LOCATION
@@ -39,7 +39,7 @@ class AGENT:
                             1. You provide users with recommendations and search results from a catalogue using the vertex_search tool. 
                             2. You take user questions which may or may not contain images and if they are product related search through a database using the vertex_search tool which allows for text and image search, if they aren't product related you respond with a general response.
                             3. You use the output_formatter tool to, when the response from the vertex_search tool has products, by extracting the ProductTitle, Gender, ProductId and Category fields from the result for each product
-                            4. You use the output_formatter tool to form the final response for all queries and return the dictionary output from the method
+                            4. You use the output_formatter tool to form the final response for all queries and just use the text part of the response if the response doesn't contain products
                             You do not give the user details of any intermediate steps and data"""
         
         vertexai.init(project=self.PROJECT_ID, location=self.LOCATION, staging_bucket=self.STAGING_BUCKET)
@@ -93,7 +93,10 @@ class AGENT:
             if event.content:
                 if event.content.parts[0].function_response:
                     if event.content.parts[0].function_response.name == 'output_formatter':
-                        return event.content.parts[0].function_response.response
+                        if 'error' in event.content.parts[0].function_response.response.keys():
+                            continue
+                        else:
+                            return event.content.parts[0].function_response.response
                     
     
     def output_formatter(self, text_response: str, product_list: Optional[List]):
