@@ -20,7 +20,7 @@ class AGENT:
         """Initialises the vertex ai project and reasoning engine"""
         
         load_dotenv()
-
+        
         self.PROJECT_ID = os.getenv('PROJECT_ID')
         self.LOCATION = os.getenv('LOCATION')
         self.LOCATION_ID = os.getenv('LOCATION_ID')
@@ -28,7 +28,6 @@ class AGENT:
         self.DATASTORE_ID = os.getenv('DATASTORE_ID')
         self.APP_ID = os.getenv('APP_ID')
         self.AGENT_ENGINE_ID = os.getenv('AGENT_ENGINE_ID')
-        self.AGENT_ENGINE_RESOURCE_NAME = os.getenv('AGENT_ENGINE_RESOURCE_NAME')
         self.MODEL = os.getenv('MODEL_NAME')
                 
         os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "TRUE"
@@ -43,6 +42,7 @@ class AGENT:
                             You do not give the user details of any intermediate steps and data"""
         
         vertexai.init(project=self.PROJECT_ID, location=self.LOCATION, staging_bucket=self.STAGING_BUCKET)
+        
         self.agent = Agent(
                             model=self.MODEL,
                             name="catalogue_query_agent",
@@ -66,6 +66,9 @@ class AGENT:
             memory_service=self.memory_service,
         )
         
+        
+        
+        
     async def add_session_to_memory(self, callback_context: CallbackContext) -> Optional[types.Content]:
         """Automatically save completed sessions to memory bank """
         if hasattr(callback_context, "_invocation_context"):
@@ -75,12 +78,12 @@ class AGENT:
                     invocation_context.session
                 )
     
-    async def query(self, query, user_id): 
+    async def query(self, query, attachments, user_id): 
         session = await self.session_service.create_session(
             app_name=self.agent.name, 
             user_id=user_id,
         )
-        content = types.Content(role="user", parts=[types.Part(text=query)])
+        content = types.Content(role="user", parts=[types.Part(text=query), types.Part(content=attachments)])
         events = self.runner.run(
             user_id=session.user_id, session_id=session.id, new_message=content
         )

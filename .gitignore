@@ -6,6 +6,8 @@
 
 # Caches
 *pycache*
+.DS_STORE
+
 
 # VS code 
 launch.json
