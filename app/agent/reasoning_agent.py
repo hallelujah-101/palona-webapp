@@ -104,7 +104,6 @@ class AGENT:
                 if event.content.parts[0].function_response:
                     if event.content.parts[0].function_response.name == 'output_formatter':
                         if 'error' in event.content.parts[0].function_response.response.keys():
-                            print(event.content.parts[0].function_response.response['error'])
                             continue
                         else:
                             return event.content.parts[0].function_response.response
