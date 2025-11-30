@@ -1,7 +1,9 @@
 import logging
+from typing import List
 from app.agent.reasoning_agent import AGENT
 from app.utils.helper_functions import *
 from flask import Flask, request
+
 
 app = Flask(__name__)
 
@@ -17,12 +19,12 @@ async def ask_gemini():
     if request.method == 'OPTIONS':
         return empty_response
         
-    session_id = request.form.get('session_id')
-    text = request.form.get('text')
-    attachments = request.form.get('attachments')
+    session_id: str = request.form.get('session_id')
+    text: str = request.form.get('text')
+    attachments: List[str] = [request.form.get('attachments')]
 
     agent = AGENT()
-    model_response = await agent.query(text, session_id)
+    model_response = await agent.query(text, attachments, session_id)
     
     response = None
     if model_response:
