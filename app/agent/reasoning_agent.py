@@ -89,7 +89,7 @@ class AGENT:
             user_id=user_id,
         )
         
-        if len(images) > 0:
+        if len(images) > 0 and images[0] != None:
             image_part = types.Part.from_bytes(mime_type="image/jpeg", data=images[0]) 
             content = types.Content(role="user", parts=[types.Part(text=query), image_part])
         else:
