@@ -19,7 +19,7 @@ This project uses Google cloud resources in the backend for searching through ap
   - [Session management with firestore database](https://cloud.google.com/agent-builder/agent-engine/develop/langchain#chat-history)
   - [Agent creation and deployment](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/quickstart)
  
-- Using Google ADK
+- Creating and querying an agent within the application - Google ADK
   - [Google ADK agent setup](https://www.kaggle.com/code/kaggle5daysofai/day-1a-from-prompt-to-action#%E2%9A%99%EF%B8%8F-Section-1:-Setup)
   - [Google ADK agent session management and memory](https://www.kaggle.com/code/kaggle5daysofai/day-3a-agent-sessions)
     
