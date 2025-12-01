@@ -26,7 +26,7 @@ This project uses Google cloud resources in the backend for searching through ap
 - Deploy to Cloud Run applications
   - [Deployment steps](https://cloud.google.com/run/docs/quickstarts/deploy-container)
 
-# Using Vertex AI (branch - summarisig_agent)
+## Vertex AI (branch - summarisig_agent)
 
 Fill in all the environment variables with the corresponding values from the resources created in the [frontend ReadMe](https://github.com/hallelujah-101/paloni_flutter/blob/main/README.md) and the steps above.
 
@@ -35,7 +35,7 @@ Fill in all the environment variables with the corresponding values from the res
          STAGING_BUCKET	:
          AGENT_ENGINE_RESOURCE_NAME: 
 
-# using google ADK (branch - main)
+## Google ADK (branch - main)
 
 Fill in all the environment variables with the corresponding values from the resources created in the [frontend ReadMe](https://github.com/hallelujah-101/paloni_flutter/blob/main/README.md) and the steps above.
 
