@@ -15,12 +15,18 @@ This project uses Google cloud resources in the backend for searching through ap
   - [Setup a firestore database through the console](https://cloud.google.com/firestore/native/docs/manage-databases)
   - Create a collection
     
-- Creating and Deploying a Langchain agent
+- Creating and Deploying a Langchain agent - Vertex AI 
   - [Session management with firestore database](https://cloud.google.com/agent-builder/agent-engine/develop/langchain#chat-history)
   - [Agent creation and deployment](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/quickstart)
+ 
+- Using Google ADK
+  - [Google ADK agent setup](https://www.kaggle.com/code/kaggle5daysofai/day-1a-from-prompt-to-action#%E2%9A%99%EF%B8%8F-Section-1:-Setup)
+  - [Google ADK agent session management and memory](https://www.kaggle.com/code/kaggle5daysofai/day-3a-agent-sessions)
     
 - Deploy to Cloud Run applications
   - [Deployment steps](https://cloud.google.com/run/docs/quickstarts/deploy-container)
+
+# Using Vertex AI (branch - summarisig_agent)
 
 Fill in all the environment variables with the corresponding values from the resources created in the [frontend ReadMe](https://github.com/hallelujah-101/paloni_flutter/blob/main/README.md) and the steps above.
 
@@ -28,6 +34,19 @@ Fill in all the environment variables with the corresponding values from the res
          LOCATION_ID :
          STAGING_BUCKET	:
          AGENT_ENGINE_RESOURCE_NAME: 
+
+# using google ADK (branch - main)
+
+Fill in all the environment variables with the corresponding values from the resources created in the [frontend ReadMe](https://github.com/hallelujah-101/paloni_flutter/blob/main/README.md) and the steps above.
+
+        PROJECT_ID:
+        LOCATION:
+        LOCATION_ID:
+        DATASTORE_ID:
+        STAGING_BUCKET:
+        APP_ID:
+        MODEL_NAME:
+        AGENT_ENGINE_ID:
 
 # Running locally 
 
