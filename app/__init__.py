@@ -6,6 +6,7 @@ from flask import Flask, request
 
 
 app = Flask(__name__)
+agent = AGENT()
 
 @app.route("/")
 def start():
@@ -14,16 +15,15 @@ def start():
 @app.route("/ask_gemini", methods=['POST', 'OPTIONS'])
 async def ask_gemini():
     """Query a reasoning Agent to generate a response from the query"""
-
+    
     empty_response = response_object(" ")
     if request.method == 'OPTIONS':
         return empty_response
         
     session_id: str = request.form.get('session_id')
     text: str = request.form.get('text')
-    attachments: List[str] = [request.form.get('attachments')]
-
-    agent = AGENT()
+    attachments: List[str] = request.form.getlist('attachments')
+    
     model_response = await agent.query(text, attachments, session_id)
     
     response = None

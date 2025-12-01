@@ -8,6 +8,7 @@ from google.cloud import discoveryengine
 from google.adk.memory import VertexAiMemoryBankService
 from google.adk.sessions import VertexAiSessionService
 from google.adk.tools.preload_memory_tool import PreloadMemoryTool
+from google.adk.tools.load_memory_tool import LoadMemoryTool
 from google.adk.agents.callback_context import CallbackContext
 from google.genai import types
 from google.adk.agents import Agent, LlmAgent
@@ -38,28 +39,34 @@ class AGENT:
         customer_agent_instruction = """You are a helpful and funny conversational agent named Gemi, and you are a Gemini.
                             1. You take user questions which may or may not contain images and if they are product related you search through a database using the catalogue_search_agent which allows for text and image search, if they aren't product related you respond with a general response.
                             2. You take the response from the catalogue_query_agent and use the output_formatter tool to, when the response from the catalogue_search_agent has products, by extracting the ProductTitle, Gender, ProductId and Category fields from the result for each product
-                            3. You use the output_formatter tool to form the final response for all queries and just use the text part of the your response if it's a general response or the the response from the catalogue_query_agent doesn't contain products
+                            3. You invoke the LoadMemory tool if asked to generate a response to questions about past conversations.
+                            4. You use the output_formatter tool to form the final response for all queries and just use the text part of the your response if it's a general response or the the response from the catalogue_query_agent doesn't contain products
                             You do not give the user details of any intermediate steps and data"""
         
+
         vertexai.init(project=self.PROJECT_ID, location=self.LOCATION, staging_bucket=self.STAGING_BUCKET)
         
-        catalogue_search_agent = Agent(
+        catalogue_search_agent = LlmAgent(
                             model=self.MODEL,
                             name="catalogue_query_agent",
                             tools=[self.vertex_search],
                             instruction=search_agent_instruction,
         )
         
-        self.agent = Agent(
+        self.agent = LlmAgent(
                         model=self.MODEL,
                         name="customer_support_agent",
-                        tools=[PreloadMemoryTool(), self.output_formatter],
+                        tools=[self.output_formatter, PreloadMemoryTool(), LoadMemoryTool()],
                         after_agent_callback=self.add_session_to_memory,
                         sub_agents=[catalogue_search_agent],
                         instruction=customer_agent_instruction,
         )
         
         self.session_service = VertexAiSessionService(
+            project=self.PROJECT_ID, location=self.LOCATION, agent_engine_id=self.AGENT_ENGINE_ID
+        )
+        
+        VertexAiSessionService(
             project=self.PROJECT_ID, location=self.LOCATION, agent_engine_id=self.AGENT_ENGINE_ID
         )
         
@@ -74,6 +81,8 @@ class AGENT:
             memory_service=self.memory_service,
         )
         
+        self.session = None
+        
     async def add_session_to_memory(self, callback_context: CallbackContext) -> Optional[types.Content]:
         """Automatically save completed sessions to memory bank """
         if hasattr(callback_context, "_invocation_context"):
@@ -83,23 +92,29 @@ class AGENT:
                     invocation_context.session
                 )
     
-    async def query(self, query, images, user_id): 
-        session = await self.session_service.create_session(
-            app_name=self.agent.name, 
-            user_id=user_id,
-        )
+    async def query(self, query, images, user_id):
+        
+        if self.session == None:
+            self.session = await self.session_service.create_session(
+                app_name=self.agent.name, 
+                user_id=user_id,
+            )
+            
+            await self.memory_service.add_session_to_memory(self.session)
+            
+        query_parts = [types.Part(text=query)]
         
         if len(images) > 0 and images[0] != None:
-            image_part = types.Part.from_bytes(mime_type="image/jpeg", data=images[0]) 
-            content = types.Content(role="user", parts=[types.Part(text=query), image_part])
-        else:
-            content = types.Content(role="user", parts=[types.Part(text=query)])
+            for image in images:
+                image_part = types.Part.from_bytes(mime_type="image/jpeg", data=images[0]) 
+                query_parts.append(image_part)
         
+        content = types.Content(role="user", parts=query_parts)
         events = self.runner.run(
-            user_id=session.user_id, session_id=session.id, new_message=content
+            user_id=self.session.user_id, session_id=self.session.id, new_message=content
         )
         
-        for event in events:    
+        for event in events:
             if event.content:
                 if event.content.parts[0].function_response:
                     if event.content.parts[0].function_response.name == 'output_formatter':
